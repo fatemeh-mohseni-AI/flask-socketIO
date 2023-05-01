@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Panel</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        const socket = io.connect('http://127.0.0.1:5000');
+
+        function restart() {
+            socket.emit('restart');
+        }
+
+        function shutdown() {
+            socket.emit('shutdown');
+        }
+
+        function handleSubmit(event) {
+    event.preventDefault();
+    const command = document.getElementById('command').value;
+    socket.emit('user_input', command);
+}
+
+socket.on('output', function(output) {
+    const pre = document.createElement('pre');
+    pre.textContent = output;
+    document.body.appendChild(pre);
+
+    const clearButton = document.createElement('button');
+    clearButton.textContent = 'Clear';
+    clearButton.classList.add('button');
+    clearButton.addEventListener('click', function() {
+        document.querySelectorAll('pre').forEach(function(element) {
+            element.remove();
+        });
+    });
+    document.body.appendChild(clearButton);
+    
+});
+
+socket.on('error', function(error) {
+    alert(error);
+});
+    </script>
+</head>
+<body>
+    <button class="button" onclick="restart()">Restart</button>
+    <button class="button" onclick="shutdown()">Shutdown</button>
+    <form onsubmit="handleSubmit(event)">
+        <label for="command">Enter command:</label>
+        <input type="text" id="command" name="command">
+        <button class="button" type="submit">Submit</button>
+    </form>
+</body>
+</html>
