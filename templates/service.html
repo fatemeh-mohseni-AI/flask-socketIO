@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <title>Sadid AI Service Restart</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background-color: #f2f2f2;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        #output {
+            background-color: #fff;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            padding: 12px 20px;
+            margin-top: 20px;
+            font-size: 16px;
+            height: 200px;
+            overflow-y: scroll;
+        }
+        #output ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        #output li {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f2f2f2;
+            border-radius: 4px;
+        }
+        #error {
+            background-color: #fff;
+            border: 2px solid #f00;
+            border-radius: 4px;
+            padding: 12px 20px;
+            margin-top: 20px;
+            font-size: 16px;
+            color: #f00;
+        }
+        #button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sadid AI Service Restart</h1>
+    <button id="button">Restart Service</button>
+    <div id="output">
+        <ul></ul>
+    </div>
+    <div id="error"></div>
+    <script>
+        var socket = io.connect('http://185.8.174.133:5000');
+        socket.on('connect', function() {
+            console.log('Connected to server');
+        });
+        socket.on('status', function(data) {
+            console.log('Received status: ' + data);
+            socket.emit('service_out', data);
+        });
+        socket.on('service_out', function(data) {
+            console.log('Received output: ' + data);
+            var li = document.createElement('li');
+            li.appendChild(document.createTextNode(data));
+            document.querySelector('#output ul').appendChild(li);
+        });
+        socket.on('service_error', function(data) {
+            console.log('Received error: ' + data);
+            document.querySelector('#error').innerHTML = data;
+        });
+        document.querySelector('#button').addEventListener('click', function() {
+            console.log('Restarting Sadid AI service');
+            socket.emit('restart_sadid_ai');
+        });
+    </script>
+</body>
+</html>
