@@ -1,5 +1,6 @@
-import socketio , subprocess
-
+import socketio
+import subprocess
+import  requests
 
 sio = socketio.Client()
 
@@ -17,8 +18,6 @@ def message(data):
         sio.emit('output', output.decode())
     except subprocess.CalledProcessError as e:
         sio.emit('error', e.output.decode())
-
-
 
 
 

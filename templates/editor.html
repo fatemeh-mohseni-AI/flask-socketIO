@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>YAML Editor</title>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    .file-list {
+      margin-bottom: 1em;
+    }
+    .file-list select {
+      width: 100%;
+    }
+    .editor {
+      height: 500px;
+    }
+  </style>
+</head>
+<body>
+  <div class="file-list">
+    <label for="file-select">Select a file:</label>
+    <select id="file-select">
+      {% for file in files %}
+      <option value="{{ file }}">{{ file }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="editor">
+    <textarea id="editor"></textarea>
+  </div>
+  <div class="actions">
+    <button id="load-button">Load</button>
+    <button id="save-button">Save</button>
+  </div>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+  <script>
+    var socket = io.connect();
+
+    socket.on('file_loaded', function(contents) {
+      document.getElementById('editor').value = JSON.stringify(contents, null, 2);
+    });
+
+    document.getElementById('load-button').addEventListener('click', function() {
+      var filename = document.getElementById('file-select').value;
+      socket.emit('load_file', filename);
+    });
+
+    document.getElementById('save-button').addEventListener('click', function() {
+      var filename = document.getElementById('file-select').value;
+      var contents = JSON.parse(document.getElementById('editor').value);
+      socket.emit('save_file', {filename: filename, contents: contents});
+    });
+  </script>
+</body>
+</html>

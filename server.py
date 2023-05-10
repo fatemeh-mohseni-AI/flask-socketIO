@@ -1,7 +1,6 @@
-import os
-import yaml
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'dfagkja#$%DFS!'
@@ -74,8 +73,7 @@ def send_smain():
     socketio.emit("message", command)
 
 
-# file editor section
-
+# file handler
 
 
 
