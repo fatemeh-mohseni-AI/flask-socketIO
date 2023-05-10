@@ -60,7 +60,7 @@ def send_kill_main():
     """
     kill main command will kill process of running main code
     """
-    command = "killmain"
+    command = "pkill -9 -f main.py"
     socketio.emit("message", command)
 
 
@@ -69,7 +69,7 @@ def send_smain():
     """
     smain command will start process of running main code
     """
-    command = "smain"
+    command = "python3 /mnt/sda1/MAIN/AI_Robot/main.py"
     socketio.emit("message", command)
 
 
