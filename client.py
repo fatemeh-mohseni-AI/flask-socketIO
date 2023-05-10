@@ -8,6 +8,7 @@ sio = socketio.Client()
 def connect():
     print('Connected to server')
 
+
 @sio.event
 def message(data):
     print('Received message from server: ' + data)

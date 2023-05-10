@@ -67,6 +67,38 @@
             font-size: 16px;
             color: #f00;
         }
+        #buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .button {
+            flex-basis: 30%;
+        }
+        #smain {
+            background-color: #008CBA;
+            color: white;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #smain:hover {
+            background-color: #006080;
+        }
+        #kill_main {
+            background-color: #f44336;
+            color: white;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #kill_main:hover {
+            background-color: #d32f2f;
+        }
     </style>
 </head>
 <body>
@@ -77,6 +109,10 @@
         <ul></ul>
     </div>
     <div id="error"></div>
+    <div id="buttons">
+        <button id="smain" class="button">Start Main Code</button>
+        <button id="kill_main" class="button">Kill Main Code</button>
+    </div>
     <script>
         var socket = io.connect('http://185.8.174.133:5000');
         socket.on('connect', function() {
@@ -97,6 +133,20 @@
             console.log('Sending message: ' + message);
             socket.send(message);
             document.querySelector('#message').value = '';
+        });
+        document.querySelector('#smain').addEventListener('click', function() {
+            console.log('Sending smain command');
+            socket.emit('smain');
+            var li = document.createElement('li');
+            li.appendChild(document.createTextNode('Sent smain command'));
+            document.querySelector('#output ul').appendChild(li);
+        });
+        document.querySelector('#kill_main').addEventListener('click', function() {
+            console.log('Sending kill_main command');
+            socket.emit('kill_main');
+            var li = document.createElement('li');
+            li.appendChild(document.createTextNode('Sent kill_main command'));
+            document.querySelector('#output ul').appendChild(li);
         });
     </script>
 </body>
