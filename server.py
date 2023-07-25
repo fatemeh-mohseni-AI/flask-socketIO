@@ -2,14 +2,15 @@ from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 import yaml
 import os
-
+import eventlet
+eventlet.monkey_patch()
 
 config_ = os.path.join(os.getcwd(), "config")
 config_address = os.path.join(config_, "config.yaml")
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'dfagkja#asdgasdgasdg234F#$WFWf$%DFS!'
-socketio = SocketIO(app, cors_allowed_origins='*')
+socketio = SocketIO(app, cors_allowed_origins='*', async_mode='eventlet')
 connected_clients = []
 
 with open(config_address, 'r') as file:
@@ -152,4 +153,4 @@ if __name__ == '__main__':
                 port = int(VALUE[machine]['port'])
                 break
     file.close()
-    socketio.run(app, host=ip, port=int(port), debug=True)
+    socketio.run(app, host=ip, port=int(port), debug=True, use_reloader=False, log_output=True)
