@@ -34,6 +34,6 @@ if __name__ == '__main__':
     with open('config/config.yaml', 'r') as file:
         VALUE = yaml.safe_load(file)
         ip = VALUE["SERVER"]['ip']
-        port = int(VALUE["SERVER"]['port'])
+        port = int(VALUE["SERVER"]['port_client'])
     sio.connect(f"http://{ip}:{port}", wait_timeout=10)
     sio.wait()

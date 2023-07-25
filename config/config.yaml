@@ -1,6 +1,7 @@
 SERVER:
   ip: "185.8.174.133"
-  port: 7000
+  port: 5000
+  port_client: 7070
   active: False
 
 LOCAL:
