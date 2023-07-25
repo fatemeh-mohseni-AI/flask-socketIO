@@ -1,11 +1,16 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
+import yaml
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'dfagkja#$%DFS!'
+app.config['SECRET_KEY'] = 'dfagkja#asdgasdgasdg234F#$WFWf$%DFS!'
 socketio = SocketIO(app, cors_allowed_origins='*')
 connected_clients = []
+
+with open('config/config.yaml', 'r') as file:
+    VALUE = yaml.safe_load(file)
+    password = VALUE["JETSON"]["password"]
 
 
 @app.route('/')
@@ -46,8 +51,6 @@ def handle_error(error):
 
 # count connections
 
-
-
 @socketio.on('connect')
 def handle_connect():
     print('Client connected: ' + request.remote_addr)
@@ -78,21 +81,49 @@ def send_smain():
     socketio.emit("message", command)
 
 
+@socketio.on('show_ip')
+def send_show_ip():
+    """
+    show ip command will shows internal ip
+    """
+    command = "ifconfig | grep 192"
+    socketio.emit("message", command)
+
+
 @socketio.on('sadid_ai')
 def service_sadidai():
     """
     service sadid_ai status
     """
-    command = "service sadid_ai status"
+    command = f"echo {password} | sudo service sadid_ai status"
     socketio.emit("status", command)
 
 
+@socketio.on('sadid_rosboard')
+def service_sadid_rosboard():
+    """
+    service sadid_rosboard status
+    """
+    command = f"echo {password} | sudo service sadid_rosboard status"
+    socketio.emit("status", command)
+
+
+# -----------------------------------------------------
 @socketio.on('restart_sadid_ai')
 def service_restart_sadidai():
     """
     service sadid_ai status
     """
-    command = "echo jetson | sudo -S service sadid_ai restart"
+    command = f"echo {password} | sudo -S service sadid_ai restart"
+    socketio.emit("status", command)
+
+
+@socketio.on('restart_sadid_rosboard')
+def service_restart_sadid_rosboard():
+    """
+    service sadid_rosboard restart
+    """
+    command = f"echo {password} | sudo -S service sadid_rosboard restart"
     socketio.emit("status", command)
 
 
@@ -106,5 +137,15 @@ def service_error(output):
     socketio.emit('service_error', F"ERROR : {output}")
 
 
+# run the file
 if __name__ == '__main__':
-    socketio.run(app, host='185.8.174.133', port=5000)
+    with open('config/config.yaml', 'r') as file:
+        VALUE = yaml.safe_load(file)
+        # check whether local or server is active
+        for machine in VALUE:
+            if VALUE[machine]["active"]:
+                ip = VALUE[machine]['ip']
+                port = int(VALUE[machine]['port'])
+                break
+    file.close()
+    socketio.run(app, host=ip, port=int(port), debug=True)

@@ -1,6 +1,6 @@
 import socketio
 import subprocess
-import  requests
+import yaml
 
 sio = socketio.Client()
 
@@ -31,5 +31,13 @@ def status(data):
 
 
 if __name__ == '__main__':
-    sio.connect('http://185.8.174.133:5000')
+    with open('config/config.yaml', 'r') as file:
+        VALUE = yaml.safe_load(file)
+        # check whether local or server is active
+        for machine in VALUE:
+            if VALUE[machine]["active"]:
+                ip = VALUE[machine]['ip']
+                port = int(VALUE[machine]['port'])
+                break
+    sio.connect(f"http://{ip}:{port}", wait_timeout=10)
     sio.wait()
