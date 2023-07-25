@@ -1,14 +1,18 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 import yaml
+import os
 
+
+config_ = os.path.join(os.getcwd(), "config")
+config_address = os.path.join(config_, "config.yaml")
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'dfagkja#asdgasdgasdg234F#$WFWf$%DFS!'
 socketio = SocketIO(app, cors_allowed_origins='*')
 connected_clients = []
 
-with open('config/config.yaml', 'r') as file:
+with open(config_address, 'r') as file:
     VALUE = yaml.safe_load(file)
     password = VALUE["JETSON"]["password"]
 
@@ -139,7 +143,7 @@ def service_error(output):
 
 # run the file
 if __name__ == '__main__':
-    with open('config/config.yaml', 'r') as file:
+    with open(config_address, 'r') as file:
         VALUE = yaml.safe_load(file)
         # check whether local or server is active
         for machine in VALUE:
