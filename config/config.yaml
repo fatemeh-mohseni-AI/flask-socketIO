@@ -1,12 +1,12 @@
 SERVER:
   ip: "185.8.174.133"
   port: 5000
-  active: True
+  active: False
 
 LOCAL:
   ip: "127.0.0.1"
   port: 5000
-  active: False
+  active: True
 
 JETSON:
   password: "sadid2022"
