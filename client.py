@@ -33,11 +33,7 @@ def status(data):
 if __name__ == '__main__':
     with open('config/config.yaml', 'r') as file:
         VALUE = yaml.safe_load(file)
-        # check whether local or server is active
-        for machine in VALUE:
-            if VALUE[machine]["active"]:
-                ip = VALUE[machine]['ip']
-                port = int(VALUE[machine]['port'])
-                break
+        ip = VALUE["SERVER"]['ip']
+        port = int(VALUE["SERVER"]['port'])
     sio.connect(f"http://{ip}:{port}", wait_timeout=10)
     sio.wait()
